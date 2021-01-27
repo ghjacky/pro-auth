@@ -1,0 +1,20 @@
+# tuna source
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ stretch main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ stretch main contrib non-free
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ stretch-updates main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ stretch-updates main contrib non-free
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ stretch-backports main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ stretch-backports main contrib non-free
+deb https://mirrors.tuna.tsinghua.edu.cn/debian-security stretch/updates main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security stretch/updates main contrib non-free
+
+
+# aliyun source
+# deb http://mirrors.aliyun.com/debian stretch main contrib non-free
+# deb-src http://mirrors.aliyun.com/debian stretch main contrib non-free
+
+# deb http://mirrors.aliyun.com/debian stretch-updates main contrib non-free
+# deb-src http://mirrors.aliyun.com/debian stretch-updates main contrib non-free
+
+# deb http://mirrors.aliyun.com/debian-security stretch/updates main contrib non-free
+# deb-src http://mirrors.aliyun.com/debian-security stretch/updates main contrib non-free

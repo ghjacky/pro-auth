@@ -1,0 +1,24 @@
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  GOPROXY: "http://repo.xxxxx.cn/repository/goproxy/"
+
+before_script:
+  - export CI_COMMIT_SHORT_ID=$(git rev-parse --short HEAD)
+  - echo "before ok"
+
+stages:
+  - docker-build
+
+docker-build:
+  stage: docker-build
+  tags: 
+    - infra 
+  only:
+    - tags
+  #when: manual
+  script:
+    - docker login $HARBOR -u $HARBOR_USER -p $HARBOR_PASS
+    - docker login $HARBOR_IDC -u $HARBOR_IDC_USER -p $HARBOR_IDC_PASS
+    - make image
+    - make image-push

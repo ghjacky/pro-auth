@@ -1,0 +1,25 @@
+auth
+.idea/
+.vscode/
+
+# dependencies
+/node_modules
+web/node_modules
+web/build
+
+conf/local.app.conf
+
+# production
+/dist
+
+# misc
+.DS_Store
+npm-debug.log*
+*.pyc
+
+.idea/
+logs/
+tmp
+tmpdata
+static/frontend
+static/static

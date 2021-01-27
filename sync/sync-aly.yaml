@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-user-sync-3
+  namespace: manage
+  labels:
+    app: auth-user-sync-3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-user-sync-3
+  template:
+    metadata:
+      labels:
+        app: auth-user-sync-3
+    spec:
+      nodeSelector:
+        manage: "true"
+      containers:
+        - name: auth-user-sync-3
+          image: registry.xxxxx.cn/platform/auth-sync:v1.0.2
+          imagePullPolicy: Always
+          command:
+            - /usr/local/bin/user-sync
+            - --id=100
+            - --secret=IZ22sx3lElfzFSkcxszO6g
+            - --urls=https://aly-auth.xxxxx.cn/sync
+            - --options=user,group
+            - --period=24
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi

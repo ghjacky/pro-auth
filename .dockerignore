@@ -1,0 +1,10 @@
+tmpdata/*
+web/node_modules/*
+static/static/*
+logs/*
+docs/*
+Dockerfile
+.git/
+.vscode/
+.idea/
+*.md

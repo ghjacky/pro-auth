@@ -1,0 +1,28 @@
+#nav {
+    height: 100%;
+}
+
+#nav.ant-menu-horizontal > .ant-menu-item-selected {
+    border-top: 2px solid #1890ff;
+}
+
+#nav.ant-menu-horizontal > .ant-menu-item-active {
+    border-top: 2px solid #1890ff;
+}
+
+#nav.ant-menu-horizontal {
+    display: flex;
+    justify-content: center;
+    border: 0;
+    margin-right: 50px;
+}
+
+#nav .ant-menu-item {
+    height: 100%;
+    box-sizing: border-box;
+    border-top: 2px solid transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+}

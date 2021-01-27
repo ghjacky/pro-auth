@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Auth</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style type="text/css">
+        canvas {
+            display: block;
+            vertical-align: bottom;
+        }
+        html, body{
+            width: 100%;
+            height: 100%;
+        }
+        body {
+            margin:0;
+            padding:0;
+        }
+        .login {
+            z-index: 2;
+            position: absolute;
+            width: 420px;
+            top: 296px;
+            left: 169px;
+            text-align: center;
+        }
+
+        .login-top {
+            font-size: 24px;
+            margin-top: 60px;
+            padding-left: 40px;
+            box-sizing: border-box;
+            color: #333333;
+            margin-bottom: 40px;
+            position:relative;
+        }
+
+        .login-center {
+            width: 100%;
+        }
+
+        .login-center-img {
+            width: 20px;
+            height: 20px;
+            float: left;
+            margin-top: 5px;
+        }
+
+        .login-center-img > img {
+            width: 100%;
+        }
+
+        .login-center-input {
+            width: 420px;
+            height: 57px;
+            position: relative;
+            margin-bottom: 22px;
+        }
+
+        .login-center-input input {
+            z-index: 2;
+            transition: all 0.5s;
+            padding-left: 30px;
+            border: 1px solid #cccccc;
+            box-sizing: border-box;
+            outline: none;
+            position: relative;
+            background: #EEF0F5;
+            border-radius: 5px;
+            font-size: 18px;
+            color: #CACACA;
+            letter-spacing: 0;
+            width: 420px;
+            height: 57px;
+            line-height: 57px;
+        }
+
+        .login-center-input input:focus {
+            border: 1px solid dodgerblue;
+        }
+
+        .login-center-input-text {
+            background: white;
+            padding: 0 5px;
+            position: absolute;
+            z-index: 0;
+            opacity: 0;
+            height: 20px;
+            top: 50%;
+            margin-top: -10px;
+            font-size: 14px;
+            left: 5px;
+            color: dodgerblue;
+            line-height: 20px;
+            transition: all 0.5s;
+            -moz-transition: all 0.5s; /* Firefox 4 */
+            -webkit-transition: all 0.5s; /* Safari 和 Chrome */
+            -o-transition: all 0.5s; /* Opera */
+        }
+
+        .login-center-input input:focus ~ .login-center-input-text {
+            top: 0;
+            z-index: 3;
+            opacity: 1;
+            margin-top: -15px;
+        }
+
+        .login-link-url{
+            font-size: 14px;
+            color: dodgerblue;
+            border: 0;
+            background:transparent;
+            padding:0;
+            cursor: pointer;
+            position:absolute;
+            bottom: 5px;
+            right:5px
+        }
+
+        .login-button {
+            background-image: linear-gradient(135deg, #3A39FF 0%, #2992FF 100%);
+            border-radius: 5px;
+            font-size: 21px;
+            color: #FFFFFF;
+            letter-spacing: 7.19px;
+            width: 268px;
+            height: 57px;
+            margin-top: 35px;
+        }
+
+        .header {
+            background: #fff;
+            width: 100%;
+            position: fixed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            padding: 0;
+            border-bottom: 1px solid #d9d9d9;
+            box-sizing: content-box;
+            height: 64px;
+        }
+
+        .header img {
+            margin: 0 20px 0 20px;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            background: url(/static/login-bg.png);
+            background-size: 100vw auto;
+            background-repeat: no-repeat;
+        }
+
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            opacity:0.8;
+            background-position: 50% 50%;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            margin-left: auto;
+            margin-right: auto;
+            flex: 1;
+        }
+
+        .footer {
+            padding: 24px 50px;
+            color: rgba(0, 0, 0, .65);
+            font-size: 14px;
+            flex: 0 0 auto;
+            text-align: center;
+            background-color: white;
+            opacity: 0.8;
+        }
+
+        .errMsg {
+            color: red;
+            font-size: 14px;
+            height: 30px;
+            display:flex;
+            justify-content:center;
+        }
+
+        .login img{
+            width: 162px;
+            height: 50px;
+
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+        <div class="login">
+            <img src="/static/xxxxx-logo.png" alt="logo" title="logo" />
+            <p id="errMsg" class="errMsg">{{ .errMsg }}</p>
+            <div class="login-center">
+                <div class="login-center-input">
+                    <input id="username" type="text" name="username" value="{{.username}}" required placeholder="请输入您的邮箱或前缀" onfocus="this.placeholder=''" onblur="this.placeholder='请输入您的邮箱或前缀'" onkeypress="handleKeyPress(event)"/>
+                    <div class="login-center-input-text">邮箱或前缀</div>
+                </div>
+            </div>
+            <div class="login-center">
+                <div class="login-center-input">
+                    <input id="password" type="password" name="password" value="{{.password}}" required placeholder="请输入您的密码" onfocus="this.placeholder=''" onblur="this.placeholder='请输入您的密码'" onkeypress="handleKeyPress(event)"/>
+                    <div class="login-center-input-text">密码</div>
+                </div>
+            </div>
+            <div class="login-center" style="margin-bottom: 0px">
+                <div class="login-center-input">
+                    <input id="captcha-text" type="text" name="captcha" AUTOCOMPLETE="off" value="{{.captcha}}" required placeholder="请输入验证码" onfocus="this.placeholder=''" onblur="this.placeholder='请输入验证码'" onkeypress="handleKeyPress(event)"/>
+                    <div class="login-center-input-text">验证码</div>
+                </div>
+            </div>
+            <div style="padding: 5px 40px;width: 240px;display:flex;justify-content:center;align-items: flex-end;">
+                <img id="captcha" style="margin:0px 10px;width: 150px; height: 50px; " src="/captcha" onclick="resetCaptcha()" alt="Captcha image">
+                <span style="color: #4E8DF7;font-size: 10px;" onclick="resetCaptcha()">换一张</span>
+            </div>
+            <div>
+                <button class="login-button" onclick="postLogin()">
+                    {{ if .buttonName}}{{.buttonName}}{{else}}登录{{end}}
+                </button>
+            </div>
+        </div>
+</div>
+<script src="/static/js/app.js"></script>
+<script type="text/javascript">
+    function resetCaptcha() {
+        document.getElementById("captcha").setAttribute('src', '/captcha?random='+Math.random());
+    };
+    function postLogin() {
+        let name = document.getElementById("username").value;
+        let pwd = document.getElementById("password").value;
+        let captcha = document.getElementById("captcha-text").value;
+
+        let s = "{{.loginUrl}}"
+        post(s, {authinfo: btoa(JSON.stringify({
+                    "username": name,
+                    "password": pwd,
+                    "captcha": captcha,
+        }))});
+
+    };
+    function handleKeyPress(e) {
+        var key=e.keyCode || e.which;
+        if (key==13){
+            e.preventDefault(); // Ensure it is only this code that rusn
+            postLogin();
+        }
+    };
+    function post(path, params, method='post') {
+        // The rest of this code assumes you are not using a library.
+        // It can be made less wordy if you use one.
+        const form = document.createElement('form');
+        form.method = method;
+        form.action = path;
+
+        for (const key in params) {
+            if (params.hasOwnProperty(key)) {
+                const hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = key;
+                hiddenField.value = params[key];
+
+                form.appendChild(hiddenField);
+            }
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+
+</body>
+</html>

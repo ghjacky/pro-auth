@@ -1,0 +1,56 @@
+.App {
+    text-align: center;
+}
+
+.App-logo {
+    margin: 10px 20px;
+}
+
+.App-header {
+    background: #fff;
+    width: 100%;
+    position: fixed;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    padding: 0;
+    border-bottom: 1px solid #d9d9d9;
+    box-sizing: content-box;
+}
+
+.App-name {
+    font-size: 50px;
+    color: white;
+}
+
+.App-header-left {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.App-header-right {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.App-header-menu {
+    border: 0;
+    color: white;
+    background: rgb(26, 155, 252);
+    font-size: 24px;
+    margin-left: 50px;
+}
+
+
+.App-content {
+    padding: 20px;
+    margin-top: 64px;
+}
+

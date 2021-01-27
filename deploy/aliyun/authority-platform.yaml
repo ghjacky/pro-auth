@@ -1,0 +1,119 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth
+  labels:
+    app: auth
+  namespace: manage
+spec:
+  ports:
+    - port: 9096
+      targetPort: 9096
+  selector:
+    app: authority-platform
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: authority-platform
+  name: authority-platform
+  namespace: manage
+spec:
+  rules:
+    - host: aly-auth.xxxxx.cn
+      http:
+        paths:
+          - backend:
+              serviceName: auth
+              servicePort: 9096
+            path: /
+---
+apiVersion: v1
+data:
+  app.conf: |
+    appname = auth
+    httpport = 9096
+    runmode = prod
+    CopyRequestBody = true
+
+    sessionon = true
+    sessionprovider = redis_sentinel
+    sessionproviderconfig =  r-bp17cm7x9q7z4z1ry5.redis.rds.aliyuncs.com:6379,100,L%LQ!UeixXNo17S4MS6NUnRl5$%vg!K2,2,redis_master
+
+    org_domain = "xxxxx.com"
+
+    ldap_host = ad01.xxxxx.cn
+    ldap_user = "cn=support,ou=xxxxx,dc=xxxxx,dc=cn"
+    ldap_password = "xxxxx.2018"
+    ldap_base = "dc=xxxxx,dc=cn"
+    ldap_employee_ous = "BeiJing;TianJin;US;waixie;project-account"
+    ldap_mailPostfix = "@xxxxx.com"
+
+    cookie_secret = "7497caa5ab90262d577ff923ea127404"
+    special_users = "admin:JDJhJDEwJHNYOFhhOEwycjZnNlJBLnEvMUg5RC5jSVE3SWpUT3Z6MUJoZXF2THZLUkI2ZkxlaDZWc1dX:管理员"
+    db_sso = infra:wuxOew2VvYe7Tv^C@tcp(rm-bp1v7mj020g5y2cyt.mysql.rds.aliyuncs.com)/auth?parseTime=true&loc=
+kind: ConfigMap
+metadata:
+  name: authority-platform-config
+  namespace: manage
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authority-platform
+  namespace: manage
+  labels:
+    app: authority-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authority-platform
+  template:
+    metadata:
+      labels:
+        app: authority-platform
+    spec:
+      volumes:
+        - name: authority-platform-config
+          configMap:
+            name: authority-platform-config
+            items:
+              - key: app.conf
+                path: app.conf
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: manage
+                    operator: In
+                    values:
+                      - "true"
+      imagePullSecrets:
+        - name: harborkey
+      containers:
+        - name: auth-backend
+          image: harbor.xxxxx.cn/platform/authority-platform:v1.3.4
+          imagePullPolicy: Always
+          command: ["./auth"]
+          resources:
+            limits:
+              cpu: 500m
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 2Gi
+          volumeMounts:
+            - name: authority-platform-config
+              mountPath: /go/src/code.xxxxx.cn/platform/auth/conf
+          livenessProbe:
+            httpGet:
+              path: /echo
+              port: 9096
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 5

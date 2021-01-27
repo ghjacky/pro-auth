@@ -1,0 +1,108 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authority
+  labels:
+    app: authority
+  namespace: manage
+spec:
+  ports:
+    - port: 9096
+      targetPort: 9096
+      protocol: TCP
+      nodePort: 30096
+  selector:
+    app: authority-platform
+  type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: authority-platform
+  name: authority-platform
+  namespace: manage
+spec:
+  rules:
+    - host: auth.ctf.com.cn
+      http:
+        paths:
+          - backend:
+              serviceName: authority
+              servicePort: 9096
+            path: /
+---
+apiVersion: v1
+data:
+  app.conf: |
+    appname = auth
+    httpport = 9096
+    runmode = prod
+    CopyRequestBody = true
+
+    sessionon = true
+    ;sessionprovider = redis_sentinel
+    ;sessionproviderconfig = r-wz9ivhuq4ie2xiqcwe.redis.rds.aliyuncs.com:6379,100,F0hZSsHMCTGDpW1B,1,redis_master
+
+    org_domain = "ctf.com.cn"
+
+    cookie_secret = "7497caa5ab90262d277ff923ea127404"
+    special_users = "admin:JDJhJDEwJG9XLmx0c242cTJOYnJDTVg2M3R3RHViQi5nbEt2RDF1RmV4Q2phaXFGaHczYW1Dd2liWGJD:管理员"
+    special_clients = ""
+    db_sso = platform:ZeknNTZfH#El!cLq@tcp(rm-wz9022a0y2z1wi8cc.mysql.rds.aliyuncs.com)/auth?parseTime=true&loc=
+kind: ConfigMap
+metadata:
+  name: authority-config
+  namespace: manage
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authority-platform
+  namespace: manage
+  labels:
+    app: authority-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authority-platform
+  template:
+    metadata:
+      labels:
+        app: authority-platform
+    spec:
+      volumes:
+        - name: authority-config
+          configMap:
+            name: authority-config
+            items:
+              - key: app.conf
+                path: app.conf
+      imagePullSecrets:
+        - name: ctf-harbor
+      containers:
+        - name: authority
+          image: harbor.ctf.com.cn/platform/authority-platform:v1.5.0-2-g7d7731f
+          # image: harbor.ctf.com.cn/platform/redis:latest
+          imagePullPolicy: IfNotPresent
+          command: 
+            - "./auth"
+          resources:
+            limits:
+              cpu: 2
+              memory: 1Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: authority-config
+              mountPath: /go/src/code.xxxxx.cn/platform/auth/conf
+          livenessProbe:
+            httpGet:
+              path: /echo
+              port: 9096
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 5

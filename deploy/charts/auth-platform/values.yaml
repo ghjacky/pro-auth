@@ -1,0 +1,17 @@
+# Default values for ai-scheduler.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 3
+image:
+  repository: registry.xxxxx.cn/platform/kubernetes/ai-scheduler
+  pullPolicy: IfNotPresent
+restartPolicy: Always
+
+resources:
+  limits:
+    cpu: 8
+    memory: 8Gi
+  requests:
+    cpu: 8
+    memory: 8Gi
+
